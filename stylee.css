@@ -1,0 +1,55 @@
+:root {
+    --font-heading-name: 'Inter';
+    --font-body-name: 'Inter';
+    --font-heading: 'Inter', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --letter-spacing-heading: -0.02em;
+    --letter-spacing-body: 0px;
+    --space-base: 0.5rem;
+    
+    /* Increased border radius for more roundness */
+    --radius-small: 0.75rem; /* 12px */
+    --radius-large: 1rem;    /* 16px */
+    
+    --border-width: 1px;
+    --shadow-color: 91 71 219;
+    --shadow-offset-x: 0px;
+    --shadow-offset-y: 4px;
+    --shadow-blur: 12px;
+    --shadow-spread: 0px;
+    --shadow-opacity: 0.08;
+    
+    /* Updated custom shadow for a "glow" effect */
+    --shadow-custom: 0px 0px 20px rgba(91, 71, 219, 0.15);
+    --shadow-custom-hover: 0px 0px 25px rgba(91, 71, 219, 0.3);
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #1A202C; 
+}
+::-webkit-scrollbar-thumb {
+    background: #4A5568; 
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #718096; 
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.page-section {
+    display: none;
+}
+.page-section.active {
+    display: block;
+}

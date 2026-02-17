@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventFlow - College Event Platform</title>
+    
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link id="heading-font-link" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link id="body-font-link" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ['var(--font-heading-name)', 'sans-serif'],
+                        body: ['var(--font-body-name)', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#EEECFB',
+                            100: '#DCD9F7',
+                            200: '#B9B3EF',
+                            300: '#968DE7',
+                            400: '#7367DF',
+                            500: '#5B47DB',
+                            600: '#4939AF',
+                            700: '#372B83',
+                            800: '#241C58',
+                            900: '#120E2C',
+                        },
+                        secondary: {
+                            50: '#FFF0F0',
+                            100: '#FFE1E1',
+                            200: '#FFC2C2',
+                            300: '#FFA4A4',
+                            400: '#FF8585',
+                            500: '#FF6B6B',
+                            600: '#CC5656',
+                            700: '#994040',
+                            800: '#662B2B',
+                            900: '#331515',
+                        },
+                        neutral: {
+                            50: '#F8F9FC',
+                            100: '#F1F3F9',
+                            200: '#E2E8F0',
+                            300: '#CBD5E0',
+                            400: '#A0AEC0',
+                            500: '#718096',
+                            600: '#4A5568',
+                            700: '#2D3748',
+                            800: '#1A202C',
+                            900: '#0F1419',
+                        },
+                    },
+                    spacing: {
+                        base: 'var(--space-base)',
+                    },
+                    borderRadius: {
+                        small: 'var(--radius-small)',
+                        large: 'var(--radius-large)',
+                    },
+                    boxShadow: {
+                        custom: 'var(--shadow-custom)',
+                        'custom-hover': 'var(--shadow-custom-hover)',
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-body bg-neutral-900 text-neutral-300" style="height: auto; min-height: 100%;">
+
+    <nav class="hidden md:block sticky top-0 z-50 bg-neutral-800/95 backdrop-blur-md border-b border-neutral-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-small flex items-center justify-center text-white shadow-custom">
+                        <i data-lucide="zap" class="w-5 h-5"></i>
+                    </div>
+                    <span class="font-heading font-bold text-xl text-white tracking-tight">EventFlow</span>
+                </div>
+                <div class="flex items-center space-x-8">
+                    <a href="#" class="nav-link text-primary-400 font-medium text-sm" data-page="discover">Discover</a>
+                    <a href="#" class="nav-link text-neutral-400 hover:text-primary-400 font-medium text-sm transition-colors" data-page="event-detail">Event Detail</a>
+                    <a href="#" class="nav-link text-neutral-400 hover:text-primary-400 font-medium text-sm transition-colors" data-page="volunteer">Volunteer</a>
+                    <a href="#" class="nav-link text-neutral-400 hover:text-primary-400 font-medium text-sm transition-colors" data-page="organizer">Dashboard</a>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="p-2 text-neutral-400 hover:text-neutral-200 relative">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-secondary-500 rounded-full shadow-[0_0_8px_rgba(255,107,107,0.5)]"></span>
+                    </button>
+                    <div class="w-8 h-8 rounded-full bg-primary-500/20 border border-primary-500/30 overflow-hidden ring-2 ring-primary-500/20">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100" alt="Profile" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="md:hidden sticky top-0 z-50 bg-neutral-800 border-b border-neutral-700 px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-small flex items-center justify-center text-white">
+                <i data-lucide="zap" class="w-5 h-5"></i>
+            </div>
+            <span class="font-heading font-bold text-lg text-white">EventFlow</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <button class="p-2 text-neutral-400">
+                <i data-lucide="search" class="w-5 h-5"></i>
+            </button>
+            <div class="w-8 h-8 rounded-full bg-neutral-700 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100" alt="Profile" class="w-full h-full object-cover">
+            </div>
+        </div>
+    </div>
+
+    <div id="discover" class="page-section active">
+        <section class="relative bg-gradient-to-br from-primary-600 via-primary-700 to-neutral-900 text-white overflow-hidden max-h-[600px]">
+            <div class="absolute inset-0 bg-black/20"></div>
+            <div class="absolute -right-20 -top-20 w-96 h-96 bg-primary-500/20 rounded-full blur-3xl"></div>
+            <div class="absolute -left-20 -bottom-20 w-96 h-96 bg-secondary-500/10 rounded-full blur-3xl"></div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 relative z-10">
+                <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+                    <div class="flex-1 space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-xs font-medium text-white shadow-custom">
+                            <span class="w-2 h-2 rounded-full bg-secondary-500 animate-pulse shadow-[0_0_8px_rgba(255,107,107,0.8)]"></span>
+                            Happening Now
+                        </div>
+                        <h1 class="font-heading text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
+                            Campus Tech Summit 2024
+                        </h1>
+                        <p class="text-primary-100 text-lg md:text-xl max-w-xl leading-relaxed">
+                            Join over 500 students for the biggest technology event of the semester. Workshops, hackathons, and networking.
+                        </p>
+                        <div class="flex flex-wrap gap-4 pt-2">
+                            <button class="bg-gradient-to-r from-white to-neutral-100 text-primary-700 hover:from-neutral-100 hover:to-neutral-200 px-8 py-3 rounded-small font-medium transition-all transform hover:-translate-y-0.5 shadow-lg shadow-white/10">
+                                Register Now
+                            </button>
+                            <button class="bg-white/5 border border-white/20 text-white hover:bg-white/10 px-6 py-3 rounded-small font-medium transition-colors flex items-center gap-2 backdrop-blur-sm">
+                                <i data-lucide="info" class="w-4 h-4"></i>
+                                View Details
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-6 pt-4 text-sm font-medium text-primary-100">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="calendar" class="w-4 h-4"></i>
+                                <span>Oct 15-17</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="map-pin" class="w-4 h-4"></i>
+                                <span>Main Auditorium</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="users" class="w-4 h-4"></i>
+                                <span>420/500</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hidden md:block w-full md:w-1/3 lg:w-5/12">
+                        <div class="relative rounded-large overflow-hidden shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500 border border-white/10">
+                            <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80" alt="Event" class="w-full h-auto object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6">
+                                <div class="flex justify-between items-end">
+                                    <div>
+                                        <p class="text-white/70 text-sm">Featured Speaker</p>
+                                        <p class="text-white font-bold text-lg">Dr. Sarah Chen</p>
+                                    </div>
+                                    <div class="bg-gradient-to-r from-secondary-500 to-secondary-600 text-white text-xs font-bold px-2 py-1 rounded shadow-lg">LIVE</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-8 md:py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                <div class="flex overflow-x-auto pb-2 md:pb-0 gap-2 hide-scrollbar w-full md:w-auto">
+                    <button class="whitespace-nowrap px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-full text-sm font-medium shadow-custom">All Events</button>
+                    <button class="whitespace-nowrap px-4 py-2 bg-neutral-800 border border-neutral-700 text-neutral-300 hover:border-primary-500 hover:text-primary-400 rounded-full text-sm font-medium transition-colors">Academic</button>
+                    <button class="whitespace-nowrap px-4 py-2 bg-neutral-800 border border-neutral-700 text-neutral-300 hover:border-primary-500 hover:text-primary-400 rounded-full text-sm font-medium transition-colors">Cultural</button>
+                    <button class="whitespace-nowrap px-4 py-2 bg-neutral-800 border border-neutral-700 text-neutral-300 hover:border-primary-500 hover:text-primary-400 rounded-full text-sm font-medium transition-colors">Sports</button>
+                    <button class="whitespace-nowrap px-4 py-2 bg-neutral-800 border border-neutral-700 text-neutral-300 hover:border-primary-500 hover:text-primary-400 rounded-full text-sm font-medium transition-colors">Workshops</button>
+                </div>
+                <div class="flex items-center gap-3 w-full md:w-auto">
+                    <div class="relative flex-1 md:w-64">
+                        <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 w-4 h-4"></i>
+                        <input type="text" placeholder="Search events..." class="w-full pl-10 pr-4 py-2 bg-neutral-800 border border-neutral-700 rounded-small text-sm text-neutral-200 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500 transition-shadow">
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                <div class="group bg-gradient-to-br from-neutral-800 to-neutral-900 rounded-large shadow-custom hover:shadow-custom-hover transition-all duration-300 overflow-hidden border border-neutral-700/50 hover:border-primary-500/50 flex flex-col h-full">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=600&q=80" alt="Event" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                        <div class="absolute top-3 left-3 bg-primary-500/90 backdrop-blur-md px-3 py-1 rounded-small text-xs font-bold text-white shadow-sm border border-white/10">
+                            ACADEMIC
+                        </div>
+                        <button class="absolute top-3 right-3 p-2 bg-neutral-900/60 backdrop-blur-md rounded-full text-neutral-400 hover:text-secondary-500 transition-colors shadow-sm border border-white/5">
+                            <i data-lucide="heart" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    <div class="p-5 flex flex-col flex-1">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-xs font-bold text-primary-400 uppercase tracking-wider">Tomorrow, 2:00 PM</span>
+                            <span class="flex items-center text-xs text-neutral-500">
+                                <i data-lucide="users" class="w-3 h-3 mr-1"></i> 120/150
+                            </span>
+                        </div>
+                        <h3 class="font-heading text-lg font-bold text-white mb-2 group-hover:text-primary-400 transition-colors">AI in Modern Healthcare</h3>
+                        <p class="text-neutral-400 text-sm mb-4 line-clamp-2">A deep dive into how artificial intelligence is transforming patient care and diagnostics.</p>
+                        
+                        <div class="mt-auto pt-4 border-t border-neutral-700/50 flex items-center justify-between">
+                            <div class="flex items-center text-xs text-neutral-500">
+                                <i data-lucide="map-pin" class="w-3 h-3 mr-1"></i> Science Hall B
+                            </div>
+                            <button class="text-sm font-medium text-primary-400 hover:text-primary-300">Register</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group bg-gradient-to-br from-neutral-800 to-neutral-900 rounded-large shadow-custom hover:shadow-custom-hover transition-all duration-300 overflow-hidden border border-neutral-700/50 hover:border-primary-500/50 flex flex-col h-full">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=600&q=80" alt="Event" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                        <div class="absolute top-3 left-3 bg-secondary-500/90 backdrop-blur-md px-3 py-1 rounded-small text-xs font-bold text-white shadow-sm border border-white/10">
+                            CULTURAL
+                        </div>
+                        <button class="absolute top-3 right-3 p-2 bg-neutral-900/60 backdrop-blur-md rounded-full text-neutral-400 hover:text-secondary-500 transition-colors shadow-sm border border-white/5">
+                            <i data-lucide="heart" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    <div class="p-5 flex flex-col flex-1">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-xs font-bold text-primary-400 uppercase tracking-wider">Sat, Oct 21</span>
+                            <span class="flex items-center text-xs text-neutral-500">
+                                <i data-lucide="users" class="w-3 h-3 mr-1"></i> 45/200
+                            </span>
+                        </div>
+                        <h3 class="font-heading text-lg font-bold text-white mb-2 group-hover:text-primary-400 transition-colors">International Food Festival</h3>
+                        <p class="text-neutral-400 text-sm mb-4 line-clamp-2">Experience cuisines from over 30 countries prepared by our diverse student body.</p>
+                        
+                        <div class="mt-auto pt-4 border-t border-neutral-700/50 flex items-center justify-between">
+                            <div class="flex items-center text-xs text-neutral-500">
+                                <i data-lucide="map-pin" class="w-3 h-3 mr-1"></i> Campus Green
+                            </div>
+                            <button class="text-sm font-medium text-primary-400 hover:text-primary-300">Register</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group bg-gradient-to-br from-neutral-800 to-neutral-900 rounded-large shadow-custom hover:shadow-custom-hover transition-all duration-300 overflow-hidden border border-neutral-700/50 hover:border-primary-500/50 flex flex-col h-full">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=600&q=80" alt="Event" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                        <div class="absolute top-3 left-3 bg-primary-500/90 backdrop-blur-md px-3 py-1 rounded-small text-xs font-bold text-white shadow-sm border border-white/10">
+                            WORKSHOP
+                        </div>
+                        <button class="absolute top-3 right-3 p-2 bg-neutral-900/60 backdrop-blur-md rounded-full text-neutral-400 hover:text-secondary-500 transition-colors shadow-sm border border-white/5">
+                            <i data-lucide="heart" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    <div class="p-5 flex flex-col flex-1">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-xs font-bold text-primary-400 uppercase tracking-wider">Mon, Oct 23</span>
+                            <span class="flex items-center text-xs text-neutral-500">
+                                <i data-lucide="users" class="w-3 h-3 mr-1"></i> 18/30
+                            </span>
+                        </div>
+                        <h3 class="font-heading text-lg font-bold text-white mb-2 group-hover:text-primary-400 transition-colors">Resume Building Workshop</h3>
+                        <p class="text-neutral-400 text-sm mb-4 line-clamp-2">Bring your laptop and get real-time feedback from industry recruiters.</p>
+                        
+                        <div class="mt-auto pt-4 border-t border-neutral-700/50 flex items-center justify-between">
+                            <div class="flex items-center text-xs text-neutral-500">
+                                <i data-lucide="map-pin" class="w-3 h-3 mr-1"></i> Career Center
+                            </div>
+                            <button class="text-sm font-medium text-primary-400 hover:text-primary-300">Register</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group bg-gradient-to-br from-neutral-800 to-neutral-900 rounded-large shadow-custom hover:shadow-custom-hover transition-all duration-300 overflow-hidden border border-neutral-700/50 hover:border-primary-500/50 flex flex-col h-full">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=600&q=80" alt="Event" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                        <div class="absolute top-3 left-3 bg-green-500/90 backdrop-blur-md px-3 py-1 rounded-small text-xs font-bold text-white shadow-sm border border-white/10">
+                            SPORTS
+                        </div>
+                        <button class="absolute top-3 right-3 p-2 bg-neutral-900/60 backdrop-blur-md rounded-full text-secondary-500 transition-colors shadow-sm border border-white/5">
+                            <i data-lucide="heart" class="w-4 h-4 fill-current"></i>
+                        </button>
+                    </div>
+                    <div class="p-5 flex flex-col flex-1">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-xs font-bold text-primary-400 uppercase tracking-wider">Wed, Oct 25</span>
+                            <span class="flex items-center text-xs text-neutral-500">
+                                <i data-lucide="users" class="w-3 h-3 mr-1"></i> 200/250
+                            </span>
+                        </div>
+                        <h3 class="font-heading text-lg font-bold text-white mb-2 group-hover:text-primary-400 transition-colors">Annual Basketball Tournament</h3>
+                        <p class="text-neutral-400 text-sm mb-4 line-clamp-2">Watch the best college teams compete for the championship trophy.</p>
+                        
+                        <div class="mt-auto pt-4 border-t border-neutral-700/50 flex items-center justify-between">
+                            <div class="flex items-center text-xs text-neutral-500">
+                                <i data-lucide="map-pin" class="w-3 h-3 mr-1"></i> Sports Complex
+                            </div>
+                            <button class="text-sm font-medium text-primary-400 hover:text-primary-300">Register</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group bg-gradient-to-br from-neutral-800 to-neutral-900 rounded-large shadow-custom hover:shadow-custom-hover transition-all duration-300 overflow-hidden border border-neutral-700/50 hover:border-primary-500/50 flex flex-col h-full">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=600&q=80" alt="Event" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                        <div class="absolute top-3 left-3 bg-purple-500/90 backdrop-blur-md px-3 py-1 rounded-small text-xs font-bold text-white shadow-sm border border-white/10">
+                            TECH
+                        </div>
+                        <button class="absolute top-3 right-3 p-2 bg-neutral-900/60 backdrop-blur-md rounded-full text-neutral-400 hover:text-secondary-500 transition-colors shadow-sm border border-white/5">
+                            <i data-lucide="heart" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    <div class="p-5 flex flex-col flex-1">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-xs font-bold text-primary-400 uppercase tracking-wider">Fri, Oct 27</span>
+                            <span class="flex items-center text-xs text-neutral-500">
+                                <i data-lucide="users" class="w-3 h-3 mr-1"></i> 89/100
+                            </span>
+                        </div>
+                        <h3 class="font-heading text-lg font-bold text-white mb-2 group-hover:text-primary-400 transition-colors">Blockchain & Web3 Seminar</h3>
+                        <p class="text-neutral-400 text-sm mb-4 line-clamp-2">Learn about decentralized technologies and their real-world applications.</p>
+                        
+                        <div class="mt-auto pt-4 border-t border-neutral-700/50 flex items-center justify-between">
+                            <div class="flex items-center text-xs text-neutral-500">
+                                <i data-lucide="map-pin" class="w-3 h-3 mr-1"></i> Tech Lab 201
+                            </div>
+                            <button class="text-sm font-medium text-primary-400 hover:text-primary-300">Register</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group bg-gradient-to-br from-neutral-800 to-neutral-900 rounded-large shadow-custom hover:shadow-custom-hover transition-all duration-300 overflow-hidden border border-neutral-700/50 hover:border-primary-500/50 flex flex-col h-full">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=600&q=80" alt="Event" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                        <div class="absolute top-3 left-3 bg-secondary-500/90 backdrop-blur-md px-3 py-1 rounded-small text-xs font-bold text-white shadow-sm border border-white/10">
+                            CULTURAL
+                        </div>
+                        <button class="absolute top-3 right-3 p-2 bg-neutral-900/60 backdrop-blur-md rounded-full text-neutral-400 hover:text-secondary-500 transition-colors shadow-sm border border-white/5">
+                            <i data-lucide="heart" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    <div class="p-5 flex flex-col flex-1">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-xs font-bold text-primary-400 uppercase tracking-wider">Sun, Oct 29</span>
+                            <span class="flex items-center text-xs text-neutral-500">
+                                <i data-lucide="users" class="w-3 h-3 mr-1"></i> 156/300
+                            </span>
+                        </div>
+                        <h3 class="font-heading text-lg font-bold text-white mb-2 group-hover:text-primary-400 transition-colors">Live Music Night</h3>
+                        <p class="text-neutral-400 text-sm mb-4 line-clamp-2">Featuring local bands and student performers. Free entry with student ID.</p>
+                        
+                        <div class="mt-auto pt-4 border-t border-neutral-700/50 flex items-center justify-between">
+                            <div class="flex items-center text-xs text-neutral-500">
+                                <i data-lucide="map-pin" class="w-3 h-3 mr-1"></i> Amphitheater
+                            </div>
+                            <button class="text-sm font-medium text-primary-400 hover:text-primary-300">Register</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-10 text-center">
+                <button class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-b from-neutral-800 to-neutral-900 border border-neutral-700 text-neutral-300 font-medium rounded-small hover:border-primary-500 transition-all shadow-custom">
+                    Load More Events
+                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <div id="event-detail" class="page-section">
+        <section class="py-8 md:py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-6 flex items-center gap-2 text-sm text-neutral-500">
+                <a href="#" class="hover:text-primary-400 cursor-pointer transition-colors">Events</a>
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                <a href="#" class="hover:text-primary-400 cursor-pointer transition-colors">Workshops</a>
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                <span class="text-white font-medium">UX Design Sprint</span>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
+                <div class="lg:w-3/5 space-y-8">
+                    <div class="rounded-large overflow-hidden shadow-custom border border-neutral-700/50 h-64 md:h-96">
+                        <img src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=1200&q=80" alt="Event Detail" class="w-full h-full object-cover">
+                    </div>
+                    
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="px-3 py-1 bg-primary-500/20 text-primary-400 text-xs font-bold rounded-full uppercase border border-primary-500/30">Academic</span>
+                            <span class="px-3 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-full uppercase flex items-center gap-1 border border-green-500/30">
+                                <span class="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_5px_rgba(74,222,128,0.5)]"></span> Confirmed
+                            </span>
+                        </div>
+                        <h2 class="font-heading text-3xl md:text-4xl font-bold text-white mb-4">UX Design Sprint: From Idea to Prototype</h2>
+                        
+                        <div class="flex items-center gap-4 mb-8 pb-8 border-b border-neutral-700">
+                            <div class="flex -space-x-2">
+                                <img class="w-8 h-8 rounded-full border-2 border-neutral-800" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=64&h=64" alt="User">
+                                <img class="w-8 h-8 rounded-full border-2 border-neutral-800" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=64&h=64" alt="User">
+                                <img class="w-8 h-8 rounded-full border-2 border-neutral-800" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=64&h=64" alt="User">
+                            </div>
+                            <span class="text-sm text-neutral-400">+42 attending</span>
+                        </div>
+
+                        <div class="prose prose-invert max-w-none text-neutral-300">
+                            <p class="mb-4">Join us for an intensive 3-hour workshop where you'll learn the fundamentals of User Experience design. We'll cover the design thinking process, wireframing, and rapid prototyping using Figma.</p>
+                            <p class="mb-4">This session is perfect for beginners and those looking to refresh their skills. No prior experience required, but please bring your laptop!</p>
+                            <h4 class="font-heading text-lg font-bold text-white mt-6 mb-3">What you'll learn:</h4>
+                            <ul class="list-disc pl-5 space-y-2 mb-6 text-neutral-400">
+                                <li>User research basics and persona creation</li>
+                                <li>Information architecture and user flows</li>
+                                <li>Low-fidelity wireframing</li>
+                                <li>Interactive prototyping in Figma</li>
+                            </ul>
+                            <h4 class="font-heading text-lg font-bold text-white mt-6 mb-3">Requirements:</h4>
+                            <ul class="list-disc pl-5 space-y-2 mb-6 text-neutral-400">
+                                <li>Laptop with Figma installed (free account)</li>
+                                <li>Basic computer skills</li>
+                                <li>Enthusiasm to learn!</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-secondary-500/10 to-secondary-500/5 border border-secondary-500/30 rounded-large p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-custom">
+                        <div>
+                            <h4 class="font-heading text-lg font-bold text-white mb-1">Volunteers Needed!</h4>
+                            <p class="text-sm text-neutral-400 mb-2">We need 3 people to help with registration and setup.</p>
+                            <div class="flex gap-2">
+                                <span class="text-xs bg-neutral-900/50 px-2 py-1 rounded border border-secondary-500/30 text-secondary-400">2 Hours</span>
+                                <span class="text-xs bg-neutral-900/50 px-2 py-1 rounded border border-secondary-500/30 text-secondary-400">Free Lunch</span>
+                            </div>
+                        </div>
+                        <button class="px-5 py-2 bg-gradient-to-r from-secondary-500 to-secondary-600 hover:from-secondary-600 hover:to-secondary-700 text-white font-medium rounded-small transition-all shadow-lg shadow-secondary-500/20 whitespace-nowrap transform hover:-translate-y-0.5">
+                            Apply to Volunteer
+                        </button>
+                    </div>
+                </div>
+
+                <div class="lg:w-2/5">
+                    <div class="sticky top-24 space-y-6">
+                        <div class="bg-gradient-to-b from-neutral-800 to-neutral-900 rounded-large shadow-custom border border-neutral-700/50 p-6">
+                            <div class="flex justify-between items-center mb-6">
+                                <div>
+                                    <span class="block text-sm text-neutral-500">Date</span>
+                                    <span class="font-bold text-white">Oct 25, 2024</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="block text-sm text-neutral-500">Time</span>
+                                    <span class="font-bold text-white">2:00 PM - 5:00 PM</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-neutral-400">Capacity</span>
+                                    <span class="font-bold text-primary-400">45/50 Spots</span>
+                                </div>
+                                <div class="w-full bg-neutral-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-primary-500 to-primary-400 h-2 rounded-full shadow-[0_0_10px_rgba(91,71,219,0.5)]" style="width: 90%"></div>
+                                </div>
+                                <p class="text-xs text-orange-400 mt-2 flex items-center">
+                                    <i data-lucide="alert-circle" class="w-3 h-3 mr-1"></i>
+                                    Only 5 spots left!
+                                </p>
+                            </div>
+
+                            <button class="w-full bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-bold py-3 rounded-small shadow-lg shadow-primary-500/30 transition-all transform hover:-translate-y-0.5 mb-3">
+                                Register Now
+                            </button>
+                            <button class="w-full bg-neutral-800 border border-neutral-600 hover:bg-neutral-700 text-neutral-200 font-medium py-3 rounded-small transition-colors flex items-center justify-center gap-2">
+                                <i data-lucide="calendar-plus" class="w-4 h-4"></i>
+                                Add to Calendar
+                            </button>
+                        </div>
+
+                        <div class="bg-gradient-to-b from-neutral-800 to-neutral-900 rounded-large border border-neutral-700/50 p-6 flex items-center gap-4 shadow-custom">
+                            <div class="w-12 h-12 rounded-full bg-primary-500/20 flex items-center justify-center text-primary-400 font-bold text-xl border border-primary-500/30">
+                                D
+                            </div>
+                            <div>
+                                <p class="text-xs text-neutral-500 uppercase tracking-wide font-bold">Organizer</p>
+                                <h4 class="font-bold text-white">Design Club</h4>
+                                <a href="#" class="text-xs text-primary-400 hover:underline">View Profile</a>
+                            </div>
+                            <button class="ml-auto p-2 text-neutral-400 hover:text-primary-400">
+                                <i data-lucide="message-circle" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+
+                        <div class="bg-gradient-to-b from-neutral-800 to-neutral-900 rounded-large border border-neutral-700/50 p-6 shadow-custom">
+                            <h4 class="font-heading font-bold text-white mb-4 flex items-center gap-2">
+                                <i data-lucide="map-pin" class="w-4 h-4 text-primary-400"></i>
+                                Location
+                            </h4>
+                            <p class="text-sm text-neutral-300 mb-2">Design Lab, Building C</p>
+                            <p class="text-xs text-neutral-500 mb-4">Room 305, 3rd Floor</p>
+                            <button class="text-sm text-primary-400 hover:text-primary-300 flex items-center gap-1">
+                                <i data-lucide="external-link" class="w-3 h-3"></i>
+                                View on Map
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="volunteer" class="page-section">
+        <section class="py-8 md:py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-8">
+                <h2 class="font-heading text-3xl font-bold text-white mb-2">Volunteer Hub</h2>
+                <p class="text-neutral-400">Make a difference and earn volunteer hours</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+                <div class="bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 rounded-large p-6 text-white shadow-custom border border-white/10">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="p-3 bg-white/20 rounded-small backdrop-blur-sm">
+                            <i data-lucide="clock" class="w-6 h-6"></i>
+                        </div>
+                        <span class="text-xs bg-white/20 px-2 py-1 rounded backdrop-blur-sm">This Month</span>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-1">24.5</h3>
+                    <p class="text-primary-100 text-sm">Hours Volunteered</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-secondary-600 via-secondary-700 to-secondary-800 rounded-large p-6 text-white shadow-custom border border-white/10">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="p-3 bg-white/20 rounded-small backdrop-blur-sm">
+                            <i data-lucide="calendar-check" class="w-6 h-6"></i>
+                        </div>
+                        <span class="text-xs bg-white/20 px-2 py-1 rounded backdrop-blur-sm">Total</span>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-1">12</h3>
+                    <p class="text-secondary-100 text-sm">Events Completed</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-green-600 via-green-700 to-green-800 rounded-large p-6 text-white shadow-custom border border-white/10">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="p-3 bg-white/20 rounded-small backdrop-blur-sm">
+                            <i data-lucide="award" class="w-6 h-6"></i>
+                        </div>
+                        <span class="text-xs bg-white/20 px-2 py-1 rounded backdrop-blur-sm">Progress</span>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-1">82%</h3>
+                    <p class="text-green-100 text-sm">To Certificate</p>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="font-heading text-xl font-bold text-white mb-4">Available Opportunities</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-gradient-to-br from-neutral-800 to-neutral-900 rounded-large border border-neutral-700/50 p-6 hover:border-secondary-500/50 transition-all shadow-custom">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h4 class="font-heading font-bold text-white mb-1">Registration Desk Assistant</h4>
+                                <p class="text-sm text-neutral-400">Campus Tech Summit</p>
+                            </div>
+                            <span class="px-2 py-1 bg-secondary-500/20 text-secondary-400 text-xs font-bold rounded border border-secondary-500/30 shadow-[0_0_5px_rgba(255,107,107,0.3)]">URGENT</span>
+                        </div>
+                        <p class="text-sm text-neutral-400 mb-4">Help check in attendees and distribute event materials at the registration desk.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="text-xs bg-neutral-800 px-2 py-1 rounded text-neutral-300 border border-neutral-700">2 hours</span>
+                            <span class="text-xs bg-neutral-800 px-2 py-1 rounded text-neutral-300 border border-neutral-700">Oct 15, 8:00 AM</span>
+                            <span class="text-xs bg-green-500/10 text-green-400 px-2 py-1 rounded border border-green-500/20">Certificate</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-4 border-t border-neutral-700/50">
+                            <span class="text-xs text-neutral-500">2/3 spots filled</span>
+                            <button class="px-4 py-2 bg-gradient-to-r from-secondary-500 to-secondary-600 hover:from-secondary-600 hover:to-secondary-700 text-white text-sm font-medium rounded-small transition-all shadow-lg shadow-secondary-500/20">
+                                Apply Now
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-neutral-800 to-neutral-900 rounded-large border border-neutral-700/50 p-6 hover:border-primary-500/50 transition-all shadow-custom">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h4 class="font-heading font-bold text-white mb-1">Social Media Coordinator</h4>
+                                <p class="text-sm text-neutral-400">Food Festival</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-neutral-400 mb-4">Capture photos and live-tweet event highlights throughout the day.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="text-xs bg-neutral-800 px-2 py-1 rounded text-neutral-300 border border-neutral-700">4 hours</span>
+                            <span class="text-xs bg-neutral-800 px-2 py-1 rounded text-neutral-300 border border-neutral-700">Oct 21, 10:00 AM</span>
+                            <span class="text-xs bg-blue-500/10 text-blue-400 px-2 py-1 rounded border border-blue-500/20">Free Meal</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-4 border-t border-neutral-700/50">
+                            <span class="text-xs text-neutral-500">0/2 spots filled</span>
+                            <button class="px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white text-sm font-medium rounded-small transition-all shadow-lg shadow-primary-500/20">
+                                Apply Now
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-neutral-800 to-neutral-900 rounded-large border border-neutral-700/50 p-6 hover:border-primary-500/50 transition-all shadow-custom">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h4 class="font-heading font-bold text-white mb-1">Setup & Logistics</h4>
+                                <p class="text-sm text-neutral-400">Music Night</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-neutral-400 mb-4">Help arrange seating, stage setup, and sound equipment before the event.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="text-xs bg-neutral-800 px-2 py-1 rounded text-neutral-300 border border-neutral-700">3 hours</span>
+                            <span class="text-xs bg-neutral-800 px-2 py-1 rounded text-neutral-300 border border-neutral-700">Oct 29, 3:00 PM</span>
+                            <span class="text-xs bg-green-500/10 text-green-400 px-2 py-1 rounded border border-green-500/20">Certificate</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-4 border-t border-neutral-700/50">
+                            <span class="text-xs text-neutral-500">1/4 spots filled</span>
+                            <button class="px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white text-sm font-medium rounded-small transition-all shadow-lg shadow-primary-500/20">
+                                Apply Now
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-neutral-800 to-neutral-900 rounded-large border border-neutral-700/50 p-6 hover:border-primary-500/50 transition-all shadow-custom">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h4 class="font-heading font-bold text-white mb-1">Tech Support</h4>
+                                <p class="text-sm text-neutral-400">UX Design Workshop</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-neutral-400 mb-4">Assist attendees with technical issues and software setup during the workshop.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="text-xs bg-neutral-800 px-2 py-1 rounded text-neutral-300 border border-neutral-700">3 hours</span>
+                            <span class="text-xs bg-neutral-800 px-2 py-1 rounded text-neutral-300 border border-neutral-700">Oct 25, 2:00 PM</span>
+                            <span class="text-xs bg-purple-500/10 text-purple-400 px-2 py-1 rounded border border-purple-500/20">Skill Building</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-4 border-t border-neutral-700/50">
+                            <span class="text-xs text-neutral-500">0/2 spots filled</span>
+                            <button class="px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white text-sm font-medium rounded-small transition-all shadow-lg shadow-primary-500/20">
+                                Apply Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="font-heading text-xl font-bold text-white mb-4">My Upcoming Assignments</h3>
+                <div class="bg-gradient-to-b from-neutral-800 to-neutral-900 rounded-large border border-neutral-700/50 overflow-hidden shadow-custom">
+                    <div class="p-6 border-b border-neutral-700/50 bg-green-500/5">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div class="flex items-start gap-4">
+                                <div class="p-3 bg-green-500/20 rounded-small border border-green-500/30 shadow-[0_0_10px_rgba(74,222,128,0.2)]">
+                                    <i data-lucide="check-circle" class="w-6 h-6 text-green-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-heading font-bold text-white mb-1">Registration Desk - Tech Summit</h4>
+                                    <p class="text-sm text-neutral-400 mb-2">Tomorrow, Oct 15 at 8:00 AM - 10:00 AM</p>
+                                    <div class="flex gap-2">
+                                        <span class="text-xs bg-neutral-800/80 px-2 py-1 rounded text-neutral-300 border border-neutral-700">Main Auditorium</span>
+                                        <span class="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded border border-green-500/30">Confirmed</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-sm font-medium rounded-small transition-colors whitespace-nowrap border border-neutral-600">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div class="flex items-start gap-4">
+                                <div class="p-3 bg-primary-500/20 rounded-small border border-primary-500/30 shadow-[0_0_10px_rgba(91,71,219,0.2)]">
+                                    <i data-lucide="calendar" class="w-6 h-6 text-primary-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-heading font-bold text-white mb-1">Social Media - Food Festival</h4>
+                                    <p class="text-sm text-neutral-400 mb-2">Oct 21 at 10:00 AM - 2:00 PM</p>
+                                    <div class="flex gap-2">
+                                        <span class="text-xs bg-neutral-800 px-2 py-1 rounded text-neutral-300 border border-neutral-700">Campus Green</span>
+                                        <span class="text-xs bg-blue-500/10 text-blue-400 px-2 py-1 rounded border border-blue-500/20">Pending</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-sm font-medium rounded-small transition-colors whitespace-nowrap border border-neutral-600">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="organizer" class="page-section">
+        <section class="py-8 md:py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="font-heading text-3xl font-bold text-white mb-2">Organizer Dashboard</h2>
+                    <p class="text-neutral-400">Manage your events and volunteers</p>
+                </div>
+                <button class="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-5 py-2.5 rounded-small font-medium flex items-center gap-2 shadow-lg shadow-primary-500/20 transition-all transform hover:-translate-y-0.5">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    Create Event
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="bg-gradient-to-br from-neutral-800 to-neutral-900 p-6 rounded-large shadow-custom border border-neutral-700/50">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-2 bg-primary-500/20 rounded-small text-primary-400 border border-primary-500/30 shadow-[0_0_8px_rgba(91,71,219,0.3)]">
+                            <i data-lucide="calendar" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-xs font-medium text-green-400 bg-green-500/10 px-2 py-1 rounded border border-green-500/20">+12%</span>
+                    </div>
+                    <h3 class="text-3xl font-bold text-white mb-1">24</h3>
+                    <p class="text-sm text-neutral-400">Total Events</p>
+                </div>
+                <div class="bg-gradient-to-br from-neutral-800 to-neutral-900 p-6 rounded-large shadow-custom border border-neutral-700/50">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-2 bg-blue-500/20 rounded-small text-blue-400 border border-blue-500/30 shadow-[0_0_8px_rgba(59,130,246,0.3)]">
+                            <i data-lucide="users" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-xs font-medium text-green-400 bg-green-500/10 px-2 py-1 rounded border border-green-500/20">+8%</span>
+                    </div>
+                    <h3 class="text-3xl font-bold text-white mb-1">1,240</h3>
+                    <p class="text-sm text-neutral-400">Total Registrations</p>
+                </div>
+                <div class="bg-gradient-to-br from-neutral-800 to-neutral-900 p-6 rounded-large shadow-custom border border-neutral-700/50">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-2 bg-secondary-500/20 rounded-small text-secondary-400 border border-secondary-500/30 shadow-[0_0_8px_rgba(255,107,107,0.3)]">
+                            <i data-lucide="heart" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-xs font-medium text-neutral-500">Active</span>
+                    </div>
+                    <h3 class="text-3xl font-bold text-white mb-1">45</h3>
+                    <p class="text-sm text-neutral-400">Volunteers</p>
+                </div>
+                <div class="bg-gradient-to-br from-neutral-800 to-neutral-900 p-6 rounded-large shadow-custom border border-neutral-700/50">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-2 bg-yellow-500/20 rounded-small text-yellow-400 border border-yellow-500/30 shadow-[0_0_8px_rgba(234,179,8,0.3)]">
+                            <i data-lucide="star" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-xs font-medium text-green-400 bg-green-500/10 px-2 py-1 rounded border border-green-500/20">+0.2</span>
+                    </div>
+                    <h3 class="text-3xl font-bold text-white mb-1">4.8</h3>
+                    <p class="text-sm text-neutral-400">Avg. Feedback</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 bg-gradient-to-b from-neutral-800 to-neutral-900 rounded-large shadow-custom border border-neutral-700/50 overflow-hidden">
+                    <div class="p-5 border-b border-neutral-700/50 flex justify-between items-center">
+                        <h3 class="font-heading font-bold text-white">Upcoming Events</h3>
+                        <button class="text-sm text-primary-400 font-medium hover:text-primary-300">View All</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-neutral-900/50 text-xs uppercase text-neutral-500 font-semibold">
+                                <tr>
+                                    <th class="px-6 py-4">Event Name</th>
+                                    <th class="px-6 py-4">Date</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4">Registrations</th>
+                                    <th class="px-6 py-4"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-neutral-700/50">
+                                <tr class="hover:bg-neutral-800/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="font-medium text-white">Campus Tech Summit</div>
+                                        <div class="text-xs text-neutral-500">Academic</div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-neutral-400">Oct 15, 2024</td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">
+                                            Active
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-24 bg-neutral-700 rounded-full h-1.5">
+                                                <div class="bg-gradient-to-r from-primary-500 to-primary-400 h-1.5 rounded-full shadow-[0_0_5px_rgba(91,71,219,0.5)]" style="width: 84%"></div>
+                                            </div>
+                                            <span class="text-xs text-neutral-400">420/500</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button class="text-neutral-400 hover:text-neutral-200">
+                                            <i data-lucide="more-horizontal" class="w-5 h-5"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-neutral-800/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="font-medium text-white">Food Festival</div>
+                                        <div class="text-xs text-neutral-500">Cultural</div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-neutral-400">Oct 21, 2024</td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                                            Draft
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-24 bg-neutral-700 rounded-full h-1.5">
+                                                <div class="bg-neutral-500 h-1.5 rounded-full" style="width: 0%"></div>
+                                            </div>
+                                            <span class="text-xs text-neutral-400">0/200</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button class="text-neutral-400 hover:text-neutral-200">
+                                            <i data-lucide="more-horizontal" class="w-5 h-5"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-neutral-800/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="font-medium text-white">UX Design Sprint</div>
+                                        <div class="text-xs text-neutral-500">Workshop</div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-neutral-400">Oct 25, 2024</td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">
+                                            Active
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-24 bg-neutral-700 rounded-full h-1.5">
+                                                <div class="bg-gradient-to-r from-primary-500 to-primary-400 h-1.5 rounded-full shadow-[0_0_5px_rgba(91,71,219,0.5)]" style="width: 90%"></div>
+                                            </div>
+                                            <span class="text-xs text-neutral-400">45/50</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button class="text-neutral-400 hover:text-neutral-200">
+                                            <i data-lucide="more-horizontal" class="w-5 h-5"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-b from-neutral-800 to-neutral-900 rounded-large shadow-custom border border-neutral-700/50 flex flex-col h-full">
+                    <div class="p-5 border-b border-neutral-700/50">
+                        <h3 class="font-heading font-bold text-white">Volunteer Tasks</h3>
+                    </div>
+                    <div class="p-4 bg-neutral-900/30 flex-1 space-y-4 overflow-y-auto max-h-[500px]">
+                        <div>
+                            <h4 class="text-xs font-bold text-neutral-500 uppercase mb-3 flex justify-between">
+                                Pending Assignment
+                                <span class="bg-neutral-800 text-neutral-400 px-1.5 rounded text-[10px] border border-neutral-700">2</span>
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="bg-neutral-800/80 p-3 rounded-small shadow-sm border border-neutral-700 cursor-move hover:border-secondary-500/50 transition-colors">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <span class="text-xs font-bold text-secondary-400">Registration Desk</span>
+                                        <i data-lucide="grip-vertical" class="w-4 h-4 text-neutral-600"></i>
+                                    </div>
+                                    <p class="text-xs text-neutral-400 mb-3">Check in attendees and hand out badges.</p>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex -space-x-1">
+                                            <div class="w-6 h-6 rounded-full bg-neutral-700 border border-neutral-800 flex items-center justify-center text-[10px] text-neutral-500">?</div>
+                                        </div>
+                                        <span class="text-[10px] bg-neutral-700 px-1.5 py-0.5 rounded text-neutral-400">2h</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-neutral-800/80 p-3 rounded-small shadow-sm border border-neutral-700 cursor-move hover:border-secondary-500/50 transition-colors">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <span class="text-xs font-bold text-secondary-400">Stage Setup</span>
+                                        <i data-lucide="grip-vertical" class="w-4 h-4 text-neutral-600"></i>
+                                    </div>
+                                    <p class="text-xs text-neutral-400 mb-3">Help arrange chairs and audio equipment.</p>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex -space-x-1">
+                                            <div class="w-6 h-6 rounded-full bg-neutral-700 border border-neutral-800 flex items-center justify-center text-[10px] text-neutral-500">?</div>
+                                        </div>
+                                        <span class="text-[10px] bg-neutral-700 px-1.5 py-0.5 rounded text-neutral-400">1h</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-2">
+                            <h4 class="text-xs font-bold text-neutral-500 uppercase mb-3 flex justify-between">
+                                Assigned
+                                <span class="bg-green-500/10 text-green-400 px-1.5 rounded text-[10px] border border-green-500/20">1</span>
+                            </h4>
+                            <div class="bg-neutral-800/80 p-3 rounded-small shadow-sm border-l-4 border-l-green-500 border-y border-r border-neutral-700">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="text-xs font-bold text-white">Social Media</span>
+                                    <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_5px_rgba(74,222,128,0.5)]"></span>
+                                </div>
+                                <p class="text-xs text-neutral-400 mb-3">Live tweet the event keynotes.</p>
+                                <div class="flex items-center gap-2">
+                                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=32&h=32" class="w-6 h-6 rounded-full" alt="Volunteer">
+                                    <span class="text-xs text-neutral-300">Sarah M.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-neutral-800 border-t border-neutral-700 px-6 py-3 z-50 flex justify-between items-center shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.3)]">
+        <a href="#" class="mobile-nav flex flex-col items-center gap-1 text-primary-400" data-page="discover">
+            <i data-lucide="home" class="w-6 h-6"></i>
+            <span class="text-[10px] font-medium">Discover</span>
+        </a>
+        <a href="#" class="mobile-nav flex flex-col items-center gap-1 text-neutral-500 hover:text-primary-400" data-page="event-detail">
+            <i data-lucide="calendar" class="w-6 h-6"></i>
+            <span class="text-[10px] font-medium">Events</span>
+        </a>
+        
+        <div class="relative -top-6">
+            <button class="w-14 h-14 bg-gradient-to-br from-primary-600 to-primary-700 rounded-full flex items-center justify-center text-white shadow-lg shadow-primary-500/40 transform hover:scale-105 transition-transform border-4 border-neutral-900">
+                <i data-lucide="plus" class="w-8 h-8"></i>
+            </button>
+        </div>
+
+        <a href="#" class="mobile-nav flex flex-col items-center gap-1 text-neutral-500 hover:text-primary-400" data-page="volunteer">
+            <i data-lucide="heart" class="w-6 h-6"></i>
+            <span class="text-[10px] font-medium">Volunteer</span>
+        </a>
+        <a href="#" class="mobile-nav flex flex-col items-center gap-1 text-neutral-500 hover:text-primary-400" data-page="organizer">
+            <i data-lucide="layout-dashboard" class="w-6 h-6"></i>
+            <span class="text-[10px] font-medium">Dashboard</span>
+        </a>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Page navigation
+        const navLinks = document.querySelectorAll('.nav-link, .mobile-nav');
+        const pages = document.querySelectorAll('.page-section');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetPage = link.getAttribute('data-page');
+                
+                // Hide all pages
+                pages.forEach(page => page.classList.remove('active'));
+                
+                // Show target page
+                document.getElementById(targetPage).classList.add('active');
+                
+                // Update nav active states
+                navLinks.forEach(l => {
+                    l.classList.remove('text-primary-400', 'text-primary-600');
+                    l.classList.add('text-neutral-400', 'text-neutral-500');
+                });
+                link.classList.remove('text-neutral-400', 'text-neutral-500');
+                link.classList.add('text-primary-400');
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Reinitialize icons after page change
+                setTimeout(() => lucide.createIcons(), 100);
+            });
+        });
+    </script>
+</body>
+</html>
